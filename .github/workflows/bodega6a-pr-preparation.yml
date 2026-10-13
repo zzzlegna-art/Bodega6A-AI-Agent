@@ -1,0 +1,27 @@
+name: Bodega6A PR Preparation Foundation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare-pr-flow:
+    name: Prepare controlled PR flow
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate automation prerequisites
+        run: |
+          echo "Bodega6A controlled PR automation foundation"
+          echo "Existing validation gates remain required"
+
+      - name: Generate PR preparation report
+        run: |
+          mkdir -p automation/reports
+          echo "# PR Preparation Report" > automation/reports/pr-preparation.md
+          echo "Status: ready for controlled branch workflow" >> automation/reports/pr-preparation.md

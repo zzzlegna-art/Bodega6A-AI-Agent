@@ -1,0 +1,53 @@
+name: Agent Create Change Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-change:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create branch
+        run: |
+          git config user.name "Bodega6A Agent"
+          git config user.email "agent@bodega6a.github"
+          git checkout -b agent/test-change-${{ github.run_id }}
+
+      - name: Create agent modification
+        run: |
+          mkdir -p automation/agent-proof
+          echo "# Agent modification proof" > automation/agent-proof/test-${{ github.run_id }}.md
+          echo "Created automatically by GitHub App workflow run ${{ github.run_id }}." >> automation/agent-proof/test-${{ github.run_id }}.md
+
+      - name: Commit change
+        run: |
+          git add .
+          git commit -m "test: agent automatic modification"
+
+      - name: Push branch
+        run: |
+          git push origin agent/test-change-${{ github.run_id }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          branch: agent/test-change-${{ github.run_id }}
+          title: "Agent automatic change test"
+          body: |
+            PR generado automáticamente por Bodega6A Agent.
+
+            Validación:
+            - Crear rama
+            - Crear archivo
+            - Commit
+            - Pull Request automático

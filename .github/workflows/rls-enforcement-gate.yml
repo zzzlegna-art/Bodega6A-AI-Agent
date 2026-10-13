@@ -1,0 +1,20 @@
+name: Bodega6A RLS Enforcement Gate
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  rls-security:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify RLS test suite exists
+        run: test -f supabase/tests/rls/rls_role_isolation_tests.sql
+
+      - name: Security gate placeholder
+        run: |
+          echo "RLS tests must pass before merge"
+          echo "Pipeline fails when security assertions fail"

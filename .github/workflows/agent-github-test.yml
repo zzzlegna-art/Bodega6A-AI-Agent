@@ -1,0 +1,30 @@
+name: Agent GitHub Connection Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  test-agent-connection:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create test file
+        run: |
+          mkdir -p automation
+          echo "# GitHub Agent Test" > automation/agent-test.md
+          echo "Connection successful" >> automation/agent-test.md
+
+      - name: Commit test change
+        run: |
+          git config user.name "Bodega6A Agent"
+          git config user.email "agent@bodega6a.local"
+          git add .
+          git commit -m "test: verify agent write access"
+          git push

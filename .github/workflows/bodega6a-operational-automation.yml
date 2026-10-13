@@ -1,0 +1,92 @@
+name: Bodega6A Operational Automation
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: bodega6a-operational-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-platform:
+    name: Plataforma - Validación completa
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Change impact analysis
+        run: |
+          mkdir -p automation/reports
+          echo "# Change Impact Analysis" > automation/reports/change-analysis.md
+          echo "Commit: $GITHUB_SHA" >> automation/reports/change-analysis.md
+          echo "" >> automation/reports/change-analysis.md
+          echo "## Detected areas" >> automation/reports/change-analysis.md
+
+          FILES=$(git diff --name-only HEAD^ HEAD || true)
+
+          if echo "$FILES" | grep -q "supabase/migrations"; then
+            echo "- Database impact: HIGH" >> automation/reports/change-analysis.md
+            echo "- Required: Supabase validation" >> automation/reports/change-analysis.md
+          else
+            echo "- Database impact: NONE DETECTED" >> automation/reports/change-analysis.md
+          fi
+
+          if echo "$FILES" | grep -Eq "rls|policy|supabase"; then
+            echo "- Security impact: REVIEW REQUIRED" >> automation/reports/change-analysis.md
+            echo "- Required: RLS Security Gate" >> automation/reports/change-analysis.md
+          else
+            echo "- Security impact: NONE DETECTED" >> automation/reports/change-analysis.md
+          fi
+
+          if echo "$FILES" | grep -Eq "src|app|components"; then
+            echo "- Application impact: DETECTED" >> automation/reports/change-analysis.md
+          else
+            echo "- Application impact: NONE DETECTED" >> automation/reports/change-analysis.md
+          fi
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8.6.12
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type validation
+        run: pnpm exec tsc -p tsconfig.app.json --noEmit
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Production build validation
+        run: pnpm build
+        env:
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: placeholder
+
+      - name: Verify Supabase structure
+        run: |
+          if [ -d supabase ]; then
+            echo "Supabase directory detected"
+          else
+            echo "Supabase directory missing"
+            exit 1
+          fi
+
+      - name: Automation report
+        run: |
+          mkdir -p automation/reports
+          echo "# Bodega6A Automation Report" > automation/reports/ci-report.md
+          echo "Validation completed" >> automation/reports/ci-report.md

@@ -1,0 +1,58 @@
+name: Bodega6A Supabase Integration
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  supabase-validation:
+    name: Supabase test environment
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Validate Supabase folder
+        run: |
+          test -d supabase
+          echo "Supabase structure detected"
+
+      - name: Start local Supabase
+        run: |
+          supabase start
+
+      - name: Apply migrations
+        run: |
+          supabase db reset
+
+      - name: Execute RLS security validation suite
+        run: |
+          for test_file in supabase/tests/rls/*.sql; do
+            echo "Running $test_file"
+            psql "postgresql://postgres:postgres@localhost:54322/postgres" -f "$test_file"
+          done
+
+      - name: Generate report
+        run: |
+          mkdir -p reports
+          echo "Bodega6A Supabase validation and RLS security tests completed" > reports/supabase-report.txt
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: supabase-validation-report
+          path: reports/supabase-report.txt

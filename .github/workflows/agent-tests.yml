@@ -1,0 +1,25 @@
+name: Agent Deno Tests
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'supabase/functions/bodega-github-agent/**'
+      - '.github/workflows/agent-tests.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  agent-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Type-check agent modules and tests
+        run: deno check supabase/functions/bodega-github-agent/index_test.ts
+      - name: Run agent tests
+        run: deno test supabase/functions/bodega-github-agent/index_test.ts

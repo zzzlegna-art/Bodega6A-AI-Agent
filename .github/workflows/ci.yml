@@ -1,0 +1,53 @@
+name: Revisión automática Bodega 6A
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: revision-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  revisar:
+    name: Tests y Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8.6.12
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Revisar TypeScript
+        run: pnpm exec tsc -p tsconfig.app.json --noEmit
+
+      - name: Ejecutar pruebas
+        run: pnpm test
+
+      - name: Compilar aplicación
+        run: pnpm build
+        env:
+          VITE_SUPABASE_URL: https://ejemplo.supabase.co
+          VITE_SUPABASE_ANON_KEY: clave-de-ejemplo-solo-para-compilar
+
+      - name: Revisar estilo
+        continue-on-error: true
+        run: pnpm lint

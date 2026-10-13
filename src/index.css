@@ -1,0 +1,412 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ===== Bodega 6A — tema claro (refinado) ===== */
+    --background: 36 40% 96%;
+    --foreground: 30 42% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 30 42% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 30 42% 12%;
+
+    --primary: 26 89% 48%;
+    --primary-foreground: 32 56% 10%;
+    --primary-glow: 31 100% 58%;
+
+    --secondary: 34 34% 92%;
+    --secondary-foreground: 30 40% 14%;
+
+    --muted: 36 26% 92%;
+    --muted-foreground: 34 15% 42%;
+
+    --accent: 31 70% 92%;
+    --accent-foreground: 26 78% 32%;
+
+    --destructive: 355 66% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 155 62% 34%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 44 90% 32%;
+    --warning-foreground: 0 0% 100%;
+
+    --info: 218 77% 50%;
+    --info-foreground: 0 0% 100%;
+
+    --border: 34 26% 86%;
+    --input: 34 26% 86%;
+    --ring: 26 89% 48%;
+
+    --chart-1: 25 88% 52%;
+    --chart-2: 218 89% 55%;
+    --chart-3: 154 68% 45%;
+    --chart-4: 47 85% 50%;
+    --chart-5: 270 68% 60%;
+
+    --radius: 0.875rem;
+
+    --gradient-primary: linear-gradient(160deg, hsl(var(--primary-glow)), hsl(var(--primary)));
+    --shadow-elegant: 0 1px 2px rgba(0, 0, 0, 0.06), 0 10px 24px -12px hsl(var(--primary) / 0.35);
+    --shadow-glow: 0 0 32px hsl(var(--primary-glow) / 0.25);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 26 44% 11%;
+    --sidebar-foreground: 34 36% 90%;
+    --sidebar-primary: 31 100% 62%;
+    --sidebar-primary-foreground: 32 56% 10%;
+    --sidebar-accent: 26 32% 19%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 26 30% 18%;
+    --sidebar-ring: 31 100% 62%;
+  }
+
+  .dark {
+    /* ===== Bodega 6A — tema oscuro negro puro ===== */
+    --background: 0 0% 0%;
+    --foreground: 36 40% 95%;
+
+    --card: 0 0% 6%;
+    --card-foreground: 36 40% 95%;
+
+    --popover: 0 0% 9%;
+    --popover-foreground: 36 40% 95%;
+
+    --primary: 25 95% 60%;
+    --primary-foreground: 32 56% 10%;
+    --primary-glow: 31 100% 76%;
+
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 36 40% 92%;
+
+    --muted: 0 0% 8%;
+    --muted-foreground: 30 14% 62%;
+
+    --accent: 0 0% 11%;
+    --accent-foreground: 36 40% 95%;
+
+    --destructive: 354 82% 70%;
+    --destructive-foreground: 351 56% 12%;
+
+    --success: 155 75% 58%;
+    --success-foreground: 155 45% 10%;
+
+    --warning: 47 95% 65%;
+    --warning-foreground: 42 50% 12%;
+
+    --info: 214 92% 69%;
+    --info-foreground: 214 55% 10%;
+
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 25 95% 63%;
+
+    --chart-1: 31 100% 67%;
+    --chart-2: 214 92% 69%;
+    --chart-3: 155 75% 58%;
+    --chart-4: 47 95% 65%;
+    --chart-5: 270 80% 71%;
+
+    --sidebar-background: 0 0% 3%;
+    --sidebar-foreground: 34 30% 88%;
+    --sidebar-primary: 31 100% 69%;
+    --sidebar-primary-foreground: 32 56% 10%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 12%;
+    --sidebar-ring: 31 100% 66%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  /* Los controles nativos del navegador (selector de fecha, listas, casillas) siguen el tema. */
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
+
+  /* Foco visible con teclado en enlaces simples. Los que ya traen su propio aro (botones
+     hechos con enlaces) se excluyen para no duplicarlo. */
+  a:not([class*="focus-visible:"]):focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+  }
+
+  html {
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+    text-rendering: optimizeLegibility;
+    /* Sin el destello gris al tocar botones en el celular */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* En el celular, un toque rápido actúa de inmediato (sin zoom por doble toque) */
+  button,
+  a,
+  [role="button"],
+  [role="tab"] {
+    touch-action: manipulation;
+  }
+
+  /* Resaltado de texto a juego con la marca */
+  ::selection {
+    background-color: hsl(var(--primary) / 0.3);
+  }
+
+  /* Barras de desplazamiento discretas, del color del tema */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.35) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 9999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--primary) / 0.55);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-image: radial-gradient(120% 55% at 50% -10%, hsl(var(--primary) / 0.07), transparent 60%);
+    background-repeat: no-repeat;
+  }
+
+  .font-tabular {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+@layer utilities {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .safe-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
+
+/* Transición de tema: la animación del círculo se controla desde theme-toggle.tsx */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+/*
+ * Autocompletado del navegador (correo y contraseña guardados): Chrome lo pinta de amarillo.
+ * Se cubre con el color de los campos del tema y se mantiene el texto legible.
+ */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: hsl(var(--foreground));
+  caret-color: hsl(var(--foreground));
+  box-shadow: 0 0 0 1000px hsl(var(--secondary)) inset;
+  -webkit-box-shadow: 0 0 0 1000px hsl(var(--secondary)) inset;
+  transition: background-color 9999s ease-out 0s;
+}
+
+input:autofill {
+  background-color: hsl(var(--secondary)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+/* ---------------------------------------------------------------------------
+ * Animaciones de entrada. Todo va dentro de "no-preference": quien tiene activado
+ * "reducir movimiento" en su equipo no ve ninguna.
+ * ------------------------------------------------------------------------- */
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Las secciones de una pantalla (título, resumen, filtros, tabla) aparecen en cascada.
+     "backwards": al terminar no queda ningún estilo pegado a los elementos. */
+  .stagger > * {
+    animation: stagger-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+  .stagger > :nth-child(2) { animation-delay: 60ms; }
+  .stagger > :nth-child(3) { animation-delay: 120ms; }
+  .stagger > :nth-child(4) { animation-delay: 180ms; }
+  .stagger > :nth-child(5) { animation-delay: 240ms; }
+  .stagger > :nth-child(6) { animation-delay: 300ms; }
+  .stagger > :nth-child(n + 7) { animation-delay: 360ms; }
+
+  /* Campos de texto: el borde y el aro de enfoque cambian suave, no de golpe. */
+  input,
+  textarea,
+  select,
+  [role="combobox"] {
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+}
+
+/* En el celular la cascada es un poco más corta para que no se sienta lenta. */
+@media (prefers-reduced-motion: no-preference) and (max-width: 640px) {
+  .stagger > * {
+    animation-duration: 0.4s;
+  }
+}
+
+/* Esqueleto de carga: un brillo suave cruza el bloque gris. Sin movimiento queda fijo. */
+@keyframes skeleton-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, hsl(var(--background) / 0.6), transparent);
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Pulido visual: transición entre páginas y respuesta al pasar el cursor.
+ * El movimiento va dentro de "no-preference"; con "reducir movimiento" solo queda el cambio
+ * de color, sin animación.
+ * ------------------------------------------------------------------------- */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Solo opacidad (sin transform): no altera el posicionamiento de nada dentro de la página. */
+  .page-enter {
+    animation: page-enter 0.28s ease-out backwards;
+  }
+}
+
+@layer components {
+  /* Tarjeta con acciones: el borde y la sombra responden al pasar el cursor (solo con ratón). */
+  .surface-hover {
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  @media (hover: hover) {
+    .surface-hover:hover {
+      border-color: hsl(var(--primary) / 0.45);
+      box-shadow: var(--shadow-elegant);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .surface-hover {
+      transition: none;
+    }
+  }
+}
+
+/* Despliegue de un lote de garantías: la altura crece de 0 a su tamaño. Si el navegador no
+   anima filas de cuadrícula, el contenido simplemente aparece (con el fundido de siempre). */
+@keyframes lote-expand {
+  from {
+    grid-template-rows: 0fr;
+  }
+  to {
+    grid-template-rows: 1fr;
+  }
+}
+
+/* Mientras dura el despliegue se recorta el contenido; al terminar vuelve a "visible", así no
+   se corta ninguna sombra ni aro de enfoque de las tarjetas. */
+@keyframes lote-clip {
+  from,
+  to {
+    overflow: hidden;
+  }
+}
+
+.lote-expand {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+
+.lote-expand > * {
+  min-height: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lote-expand {
+    animation: lote-expand 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .lote-expand > * {
+    animation:
+      lote-clip 0.32s linear,
+      fade-in 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
